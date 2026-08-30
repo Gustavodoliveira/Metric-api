@@ -38,6 +38,12 @@ public class EnterpriseJpaEntity {
   @Column(name = "telefone", nullable = false)
   private String telefone;
 
+  @Column(name = "status", nullable = false)
+  private String status;
+
+  @Column(name = "plano", nullable = false)
+  private String plano;
+
   @Column(name = "created_at", nullable = false)
   private Date created_at;
 
