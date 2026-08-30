@@ -15,29 +15,35 @@ import lombok.RequiredArgsConstructor;
 public class EnterpriseRepositoryAdapter implements EnterpriseRepository {
 
   private final PostgresDataEnterpriseRepository repository;
+  private final EnterpriseMapper mapper;
 
   @Override
   public Enterprise save(Enterprise enterprise) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'save'");
+    EnterpriseJpaEntity entity = mapper.toEntity(enterprise);
+    EnterpriseJpaEntity savedEntity = repository.save(entity);
+    return mapper.toDomain(savedEntity);
   }
 
   @Override
   public Optional<Enterprise> findById(UUID id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    return repository.findById(id).map(mapper::toDomain);
   }
 
   @Override
   public Boolean existsByCnpjAndEnterpriseId(String Cnpj, UUID enterpriseIs) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'existsByCnpjAndEnterpriseId'");
+    EnterpriseJpaEntity exist = repository.findByCnpj(Cnpj);
+    if (exist == null) {
+      return false;
+    } else {
+      return true;
+    }
+
   }
 
   @Override
   public void deleteById(UUID enterpriseId) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+    repository.deleteById(enterpriseId);
+    return;
   }
 
 }
