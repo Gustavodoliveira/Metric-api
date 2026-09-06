@@ -5,6 +5,9 @@ import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CNPJ;
 
+import com.astralis.metriq.enterprise.domain.enums.PlanType;
+import com.astralis.metriq.enterprise.domain.enums.SubscriptionStatus;
+
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,9 +32,9 @@ public class Enterprise {
 
   private String telefone;
 
-  private String status;
+  private SubscriptionStatus status;
 
-  private String plano;
+  private PlanType plano;
 
   private Date created_at;
 

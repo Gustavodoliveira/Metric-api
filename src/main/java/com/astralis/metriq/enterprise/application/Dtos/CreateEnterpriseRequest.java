@@ -1,6 +1,9 @@
 package com.astralis.metriq.enterprise.application.Dtos;
 
-public record CreateEnterpriseRequest(String razao_social, String cnpj, String email, String telefone, String status,
-    String plano) {
+import com.astralis.metriq.enterprise.domain.enums.PlanType;
+import com.astralis.metriq.enterprise.domain.enums.SubscriptionStatus;
+
+public record CreateEnterpriseRequest(String razao_social, String cnpj, String email, String telefone,
+    SubscriptionStatus status, PlanType plano) {
 
 }

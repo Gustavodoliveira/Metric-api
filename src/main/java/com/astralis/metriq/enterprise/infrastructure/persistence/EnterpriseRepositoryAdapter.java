@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.astralis.metriq.enterprise.domain.model.Enterprise;
 import com.astralis.metriq.enterprise.domain.repositories.EnterpriseRepository;
+import com.astralis.metriq.enterprise.infrastructure.persistence.EnterpriseJpaEntity;
 
 import lombok.RequiredArgsConstructor;
 
