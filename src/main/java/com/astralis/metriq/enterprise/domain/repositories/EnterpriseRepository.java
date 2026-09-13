@@ -11,6 +11,8 @@ public interface EnterpriseRepository {
 
   Optional<Enterprise> findById(UUID id);
 
+  Optional<Enterprise> findByCnpj(String Cnpj);
+
   Boolean existsByCnpjAndEnterpriseId(String Cnpj, UUID enterpriseIs);
 
   void deleteById(UUID enterpriseId);

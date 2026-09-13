@@ -31,8 +31,13 @@ public class EnterpriseRepositoryAdapter implements EnterpriseRepository {
   }
 
   @Override
+  public Optional<Enterprise> findByCnpj(String cnpj) {
+    return repository.findByCnpj(cnpj).map(mapper::toDomain);
+  }
+
+  @Override
   public Boolean existsByCnpjAndEnterpriseId(String Cnpj, UUID enterpriseIs) {
-    EnterpriseJpaEntity exist = repository.findByCnpj(Cnpj);
+    Optional<EnterpriseJpaEntity> exist = repository.findByCnpj(Cnpj);
     if (exist == null) {
       return false;
     } else {
