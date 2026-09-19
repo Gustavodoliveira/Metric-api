@@ -1,10 +1,10 @@
-package com.astralis.metriq.enterprise.application.usecase;
+package com.astralis.metriq.enterprise.application.useCases;
 
 import org.springframework.stereotype.Service;
 
-import com.astralis.metriq.enterprise.application.dto.CreateEnterpriseRequest;
 import com.astralis.metriq.enterprise.domain.model.Enterprise;
 import com.astralis.metriq.enterprise.domain.repositories.EnterpriseRepository;
+import com.astralis.metriq.enterprise.application.dtos.CreateEnterpriseRequest;
 import com.astralis.metriq.enterprise.application.mapper.CreateEnterpriseMapper;
 
 import lombok.AllArgsConstructor;

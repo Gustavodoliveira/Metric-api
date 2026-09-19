@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.astralis.metriq.enterprise.application.dto.CreateEnterpriseRequest;
-import com.astralis.metriq.enterprise.application.usecase.CreateEnterpriseUseCase;
-import com.astralis.metriq.enterprise.application.usecase.DeleteEnterpriseByIdUseCase;
-import com.astralis.metriq.enterprise.application.usecase.FindEnterpriseByCnpjUseCase;
-import com.astralis.metriq.enterprise.application.usecase.FindEnterpriseByIdUseCase;
+import com.astralis.metriq.enterprise.application.dtos.CreateEnterpriseRequest;
+import com.astralis.metriq.enterprise.application.useCases.CreateEnterpriseUseCase;
+import com.astralis.metriq.enterprise.application.useCases.DeleteEnterpriseByIdUseCase;
+import com.astralis.metriq.enterprise.application.useCases.FindEnterpriseByCnpjUseCase;
+import com.astralis.metriq.enterprise.application.useCases.FindEnterpriseByIdUseCase;
 import com.astralis.metriq.enterprise.domain.model.Enterprise;
 
 import io.swagger.v3.oas.annotations.Operation;

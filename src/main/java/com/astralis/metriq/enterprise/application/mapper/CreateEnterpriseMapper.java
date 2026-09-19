@@ -2,7 +2,8 @@ package com.astralis.metriq.enterprise.application.mapper;
 
 import java.sql.Date;
 import org.springframework.stereotype.Component;
-import com.astralis.metriq.enterprise.application.dto.CreateEnterpriseRequest;
+
+import com.astralis.metriq.enterprise.application.dtos.CreateEnterpriseRequest;
 import com.astralis.metriq.enterprise.domain.model.Enterprise;
 
 @Component

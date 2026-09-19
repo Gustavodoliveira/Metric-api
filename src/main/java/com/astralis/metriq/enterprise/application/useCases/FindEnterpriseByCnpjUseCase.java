@@ -1,4 +1,4 @@
-package com.astralis.metriq.enterprise.application.usecase;
+package com.astralis.metriq.enterprise.application.useCases;
 
 import java.util.Optional;
 
@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class FindEnterpriseByCnpjUseCase {
-
 
   private final EnterpriseRepository repository;
 

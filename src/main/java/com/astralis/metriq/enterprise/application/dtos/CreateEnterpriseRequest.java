@@ -1,4 +1,4 @@
-package com.astralis.metriq.enterprise.application.dto;
+package com.astralis.metriq.enterprise.application.dtos;
 
 import com.astralis.metriq.enterprise.domain.enums.PlanType;
 import com.astralis.metriq.enterprise.domain.enums.SubscriptionStatus;

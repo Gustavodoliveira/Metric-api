@@ -11,19 +11,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.astralis.metriq.enterprise.application.dto.CreateEnterpriseRequest;
 import com.astralis.metriq.enterprise.domain.enums.PlanType;
 import com.astralis.metriq.enterprise.domain.enums.SubscriptionStatus;
 import com.astralis.metriq.enterprise.domain.model.Enterprise;
 import com.astralis.metriq.enterprise.domain.repositories.EnterpriseRepository;
+import com.astralis.metriq.enterprise.application.dtos.CreateEnterpriseRequest;
 import com.astralis.metriq.enterprise.application.mapper.CreateEnterpriseMapper;
+import com.astralis.metriq.enterprise.application.useCases.CreateEnterpriseUseCase;
 
 @ExtendWith(MockitoExtension.class)
 public class CreateEnterpriseUseCaseTest {
 
   @Mock
   private EnterpriseRepository repository;
-
 
   @Test
   void shouldCreateEnterpriseSuccessfully() {

@@ -1,4 +1,4 @@
-package com.astralis.metriq.enterprise.application.usecase;
+package com.astralis.metriq.enterprise.application.useCases;
 
 import java.util.UUID;
 

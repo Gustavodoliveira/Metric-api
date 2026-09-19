@@ -1,4 +1,4 @@
-package com.astralis.metriq.enterprise.application.usecase;
+package com.astralis.metriq.enterprise.application.useCases;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class FindEnterpriseByIdUseCase {
-
 
   private final EnterpriseRepository repository;
 
