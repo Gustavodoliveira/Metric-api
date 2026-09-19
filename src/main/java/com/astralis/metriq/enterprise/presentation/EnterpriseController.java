@@ -19,10 +19,13 @@ import com.astralis.metriq.enterprise.application.useCase.FindEnterpriseByCnpjUs
 import com.astralis.metriq.enterprise.application.useCase.FindEnterpriseByIdUseCase;
 import com.astralis.metriq.enterprise.domain.model.Enterprise;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/enterprise")
+@Tag(name = "Enterprises", description = "endpoints for company management")
 @AllArgsConstructor
 public class EnterpriseController {
 
@@ -34,6 +37,7 @@ public class EnterpriseController {
 
   private final DeleteEnterpriseByIdUseCase deleteEnterpriseByIdUseCase;
 
+  @Operation(summary = "create enterprise", description = "Create Enterprise and return its data")
   @PostMapping("/create")
   public ResponseEntity<Enterprise> createEnterprise(@RequestBody CreateEnterpriseRequest dto) {
     Enterprise enterprise = CreateUseCase.execute(dto);
