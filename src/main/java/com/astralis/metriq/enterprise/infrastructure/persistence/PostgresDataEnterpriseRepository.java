@@ -6,5 +6,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostgresDataEnterpriseRepository extends JpaRepository<EnterpriseJpaEntity, UUID> {
-  public Optional<EnterpriseJpaEntity> findByCnpj(String cnpj);
+  boolean existsByCnpjAndId(String cnpj, UUID id);
+
+  Optional<EnterpriseJpaEntity> findByCnpj(String cnpj);
 }

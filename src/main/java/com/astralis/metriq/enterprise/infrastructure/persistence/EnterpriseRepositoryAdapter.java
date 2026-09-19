@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.astralis.metriq.enterprise.domain.model.Enterprise;
 import com.astralis.metriq.enterprise.domain.repositories.EnterpriseRepository;
-import com.astralis.metriq.enterprise.infrastructure.persistence.EnterpriseJpaEntity;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,20 +35,13 @@ public class EnterpriseRepositoryAdapter implements EnterpriseRepository {
   }
 
   @Override
-  public Boolean existsByCnpjAndEnterpriseId(String Cnpj, UUID enterpriseIs) {
-    Optional<EnterpriseJpaEntity> exist = repository.findByCnpj(Cnpj);
-    if (exist == null) {
-      return false;
-    } else {
-      return true;
-    }
-
+  public boolean existsByCnpjAndEnterpriseId(String cnpj, UUID enterpriseId) {
+    return repository.existsByCnpjAndId(cnpj, enterpriseId);
   }
 
   @Override
   public void deleteById(UUID enterpriseId) {
     repository.deleteById(enterpriseId);
-    return;
   }
 
 }

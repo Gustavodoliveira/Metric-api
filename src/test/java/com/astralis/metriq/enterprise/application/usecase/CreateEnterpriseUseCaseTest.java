@@ -1,22 +1,22 @@
-package com.astralis.metriq.enterprise.application.useCase;
+package com.astralis.metriq.enterprise.application.usecase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.astralis.metriq.enterprise.application.Dtos.CreateEnterpriseRequest;
+import com.astralis.metriq.enterprise.application.dto.CreateEnterpriseRequest;
 import com.astralis.metriq.enterprise.domain.enums.PlanType;
 import com.astralis.metriq.enterprise.domain.enums.SubscriptionStatus;
 import com.astralis.metriq.enterprise.domain.model.Enterprise;
 import com.astralis.metriq.enterprise.domain.repositories.EnterpriseRepository;
-import com.astralis.metriq.enterprise.infrastructure.persistence.EnterpriseMapper;
+import com.astralis.metriq.enterprise.application.mapper.CreateEnterpriseMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class CreateEnterpriseUseCaseTest {
@@ -24,11 +24,6 @@ public class CreateEnterpriseUseCaseTest {
   @Mock
   private EnterpriseRepository repository;
 
-  @Mock
-  private EnterpriseMapper mapper;
-
-  @InjectMocks
-  private CreateEnterpriseUseCase useCase;
 
   @Test
   void shouldCreateEnterpriseSuccessfully() {
@@ -38,22 +33,20 @@ public class CreateEnterpriseUseCaseTest {
         "teste@email.com",
         "11999999999", SubscriptionStatus.ACTIVE, PlanType.PRO);
 
-    Enterprise enterprise = new Enterprise();
-    enterprise.setRazao_social("Empresa Teste");
-
-    when(mapper.toDomain(request))
-        .thenReturn(enterprise);
-
-    when(repository.save(enterprise))
-        .thenReturn(enterprise);
+    CreateEnterpriseUseCase useCase = new CreateEnterpriseUseCase(new CreateEnterpriseMapper(), repository);
+    when(repository.save(any(Enterprise.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     Enterprise resultado = useCase.execute(request);
 
     assertNotNull(resultado);
-    assertEquals("Empresa Teste", resultado.getRazao_social());
+    assertEquals("Empresa Teste", resultado.getRazaoSocial());
 
-    verify(mapper).toDomain(request);
-    verify(repository).save(enterprise);
+    assertEquals(request.cnpj(), resultado.getCnpj());
+    assertEquals(request.status(), resultado.getStatus());
+    assertEquals(request.plano(), resultado.getPlano());
+    assertNotNull(resultado.getCreatedAt());
+    assertEquals(resultado.getCreatedAt(), resultado.getUpdatedAt());
+    verify(repository).save(resultado);
   }
 
 }

@@ -32,7 +32,7 @@ public class EnterpriseJpaEntity {
   private UUID id;
 
   @Column(name = "razao_social", nullable = false)
-  private String razao_social;
+  private String razaoSocial;
 
   @Column(name = "cnpj", nullable = false)
   private String cnpj;
@@ -52,8 +52,8 @@ public class EnterpriseJpaEntity {
   private PlanType plano;
 
   @Column(name = "created_at", nullable = false)
-  private Date created_at;
+  private Date createdAt;
 
   @Column(name = "updated_at", nullable = false)
-  private Date updated_at;
+  private Date updatedAt;
 }

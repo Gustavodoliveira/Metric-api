@@ -1,4 +1,4 @@
-package com.astralis.metriq.enterprise.application.useCase;
+package com.astralis.metriq.enterprise.application.usecase;
 
 import java.util.Optional;
 
@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.astralis.metriq.enterprise.domain.model.Enterprise;
 import com.astralis.metriq.enterprise.domain.repositories.EnterpriseRepository;
-import com.astralis.metriq.enterprise.infrastructure.persistence.EnterpriseJpaEntity;
-import com.astralis.metriq.enterprise.infrastructure.persistence.EnterpriseMapper;
 
 import lombok.AllArgsConstructor;
 
@@ -15,7 +13,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class FindEnterpriseByCnpjUseCase {
 
-  private final EnterpriseMapper mapper;
 
   private final EnterpriseRepository repository;
 

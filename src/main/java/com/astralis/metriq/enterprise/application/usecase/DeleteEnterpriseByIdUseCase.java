@@ -1,4 +1,4 @@
-package com.astralis.metriq.enterprise.application.useCase;
+package com.astralis.metriq.enterprise.application.usecase;
 
 import java.util.UUID;
 
@@ -14,8 +14,7 @@ public class DeleteEnterpriseByIdUseCase {
 
   private final EnterpriseRepository enterpriseRepository;
 
-  public String executeDeleteEnterpriseById(UUID id) {
+  public void executeDeleteEnterpriseById(UUID id) {
     enterpriseRepository.deleteById(id);
-    return "Empresa Deletada com sucesso";
   }
 }
