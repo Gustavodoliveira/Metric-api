@@ -1,6 +1,7 @@
 package com.astralis.metriq.users.infrastructure.persistence;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.astralis.metriq.enterprise.infrastructure.persistence.EnterpriseJpaEntity;
@@ -56,9 +57,9 @@ public class UserJpaEntity {
   private Status status;
 
   @Column(name = "created_at", nullable = false)
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
   @Column(name = "updated_at", nullable = false)
-  private Date updateAt;
+  private LocalDateTime updateAt;
 
 }

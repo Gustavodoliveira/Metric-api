@@ -15,5 +15,5 @@ public interface UserRepository {
 
   Optional<UserEntity> findByEnterpriseId(UUID enterpriseId);
 
-  void deleteUser(UUID id);
+  void deleteUser(UUID id, UUID enterpriseId);
 }

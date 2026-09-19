@@ -1,6 +1,7 @@
 package com.astralis.metriq.enterprise.infrastructure.persistence;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.astralis.metriq.enterprise.domain.enums.PlanType;
@@ -52,8 +53,8 @@ public class EnterpriseJpaEntity {
   private PlanType plano;
 
   @Column(name = "created_at", nullable = false)
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
   @Column(name = "updated_at", nullable = false)
-  private Date updatedAt;
+  private LocalDateTime updatedAt;
 }

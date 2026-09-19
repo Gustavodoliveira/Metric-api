@@ -1,8 +1,8 @@
 package com.astralis.metriq.enterprise.domain.model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
-
 
 import com.astralis.metriq.enterprise.domain.enums.PlanType;
 import com.astralis.metriq.enterprise.domain.enums.SubscriptionStatus;
@@ -32,8 +32,8 @@ public class Enterprise {
 
   private PlanType plano;
 
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
-  private Date updatedAt;
+  private LocalDateTime updatedAt;
 
 }

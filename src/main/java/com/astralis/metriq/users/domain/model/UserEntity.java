@@ -1,6 +1,7 @@
 package com.astralis.metriq.users.domain.model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.astralis.metriq.users.domain.enums.Status;
@@ -30,8 +31,8 @@ public class UserEntity {
 
   private Status status;
 
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
-  private Date updateAt;
+  private LocalDateTime updateAt;
 
 }
