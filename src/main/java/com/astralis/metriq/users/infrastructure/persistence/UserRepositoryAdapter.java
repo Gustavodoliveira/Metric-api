@@ -48,7 +48,7 @@ public class UserRepositoryAdapter implements UserRepository {
     if (!user.getEnterprise().getId().equals(enterpriseId)) {
       throw new UserNotFoundException("Usuário não encontrado");
     }
-    return;
+    repository.delete(user);
   }
 
 }
