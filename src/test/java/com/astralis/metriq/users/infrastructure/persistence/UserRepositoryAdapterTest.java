@@ -180,6 +180,41 @@ public class UserRepositoryAdapterTest {
     assertTrue(adapter.findById(UUID.randomUUID()).isEmpty());
   }
 
+  @Autowired
+  private jakarta.persistence.EntityManager entityManager;
+
+  @Test
+  void shouldPersistUpdatesWithoutCreatingAnotherUser() {
+    UserEntity user = createUser("original@example.com");
+    UUID id = user.getId();
+    entityManager.flush();
+    entityManager.clear();
+    user = adapter.findById(id).orElseThrow();
+    LocalDateTime createdAt = user.getCreatedAt();
+    user.setName("Novo nome");
+    user.setEmail("updated@example.com");
+    user.setSenha("updated-hash");
+    user.setPerfil("USER");
+    user.setStatus(Status.INACTIVE);
+    user.setUpdateAt(createdAt.plusSeconds(1));
+
+    UserEntity updated = adapter.updateUser(user);
+    entityManager.flush();
+    entityManager.clear();
+
+    UserEntity found = adapter.findById(id).orElseThrow();
+    assertEquals(id, updated.getId());
+    assertEquals(enterprise.getId(), found.getEmpresa_id());
+    assertEquals("Novo nome", found.getName());
+    assertEquals("updated@example.com", found.getEmail());
+    assertEquals("updated-hash", found.getSenha());
+    assertEquals("USER", found.getPerfil());
+    assertEquals(Status.INACTIVE, found.getStatus());
+    assertEquals(createdAt, found.getCreatedAt());
+    assertTrue(found.getUpdateAt().isAfter(found.getCreatedAt()));
+    assertTrue(adapter.findByEmail("original@example.com").isEmpty());
+  }
+
   private UserEntity createUser(String email) {
     UserEntity user = new UserEntity();
     user.setName("Gustavo");

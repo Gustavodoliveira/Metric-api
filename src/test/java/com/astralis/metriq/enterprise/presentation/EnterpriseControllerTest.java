@@ -20,11 +20,12 @@ class EnterpriseControllerTest {
   private final FindEnterpriseByIdUseCase findById = mock(FindEnterpriseByIdUseCase.class);
   private final FindEnterpriseByCnpjUseCase findByCnpj = mock(FindEnterpriseByCnpjUseCase.class);
   private final DeleteEnterpriseByIdUseCase delete = mock(DeleteEnterpriseByIdUseCase.class);
+  private final UpdateEnterpriseUseCase update = mock(UpdateEnterpriseUseCase.class);
   private MockMvc mvc;
 
   @BeforeEach
   void setUp() {
-    mvc = MockMvcBuilders.standaloneSetup(new EnterpriseController(create, findByCnpj, findById, delete))
+    mvc = MockMvcBuilders.standaloneSetup(new EnterpriseController(create, findByCnpj, findById, delete, update))
         .setControllerAdvice(new EnterpriseExceptionHandler()).build();
   }
 
@@ -72,5 +73,56 @@ class EnterpriseControllerTest {
     when(findByCnpj.executeFindEnterpriseByCnpj("invalid"))
         .thenThrow(new IllegalArgumentException("CNPJ inválido"));
     mvc.perform(get("/enterprise/by-Cnpj/invalid")).andExpect(status().isBadRequest());
+  }
+
+  private static final String UPDATE_BODY = """
+      {"razao_social":"Empresa Atualizada","cnpj":"11.222.333/0001-81",
+       "email":"novo@example.com","telefone":"11999999999","status":"ACTIVE","plano":"PRO"}
+      """;
+
+  @Test
+  void updateReturnsUpdatedEnterprise() throws Exception {
+    UUID id = UUID.randomUUID();
+    Enterprise enterprise = new Enterprise();
+    enterprise.setId(id);
+    enterprise.setRazaoSocial("Empresa Atualizada");
+    when(update.execute(eq(id), any())).thenReturn(Optional.of(enterprise));
+    mvc.perform(put("/enterprise/update-by-id/{id}", id)
+        .contentType(MediaType.APPLICATION_JSON).content(UPDATE_BODY))
+        .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(id.toString()))
+        .andExpect(jsonPath("$.razao_social").value("Empresa Atualizada"));
+    verify(update).execute(eq(id), argThat(r -> "Empresa Atualizada".equals(r.razaoSocial())
+        && "11.222.333/0001-81".equals(r.cnpj())));
+  }
+
+  @Test
+  void updateMissingEnterpriseReturns404() throws Exception {
+    UUID id = UUID.randomUUID();
+    when(update.execute(eq(id), any())).thenReturn(Optional.empty());
+    mvc.perform(put("/enterprise/update-by-id/{id}", id)
+        .contentType(MediaType.APPLICATION_JSON).content(UPDATE_BODY)).andExpect(status().isNotFound());
+  }
+
+  @Test
+  void updateDuplicateCnpjReturns409() throws Exception {
+    when(update.execute(any(), any())).thenThrow(
+        new com.astralis.metriq.enterprise.domain.exceptions.EnterpriseAlreadyExistsException());
+    mvc.perform(put("/enterprise/update-by-id/{id}", UUID.randomUUID())
+        .contentType(MediaType.APPLICATION_JSON).content(UPDATE_BODY)).andExpect(status().isConflict());
+  }
+
+  @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.ValueSource(strings = {"{}", "invalid-cnpj", "invalid-email", "invalid-id"})
+  void invalidUpdateDoesNotReachUseCase(String scenario) throws Exception {
+    String body = switch (scenario) {
+      case "{}" -> "{}";
+      case "invalid-cnpj" -> UPDATE_BODY.replace("11.222.333/0001-81", "123");
+      case "invalid-email" -> UPDATE_BODY.replace("novo@example.com", "invalid");
+      default -> UPDATE_BODY;
+    };
+    String id = scenario.equals("invalid-id") ? "invalid" : UUID.randomUUID().toString();
+    mvc.perform(put("/enterprise/update-by-id/{id}", id)
+        .contentType(MediaType.APPLICATION_JSON).content(body)).andExpect(status().isBadRequest());
+    verifyNoInteractions(update);
   }
 }

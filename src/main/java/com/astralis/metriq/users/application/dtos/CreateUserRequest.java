@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 public record CreateUserRequest(
     @NotNull UUID enterpriseId,
     @NotBlank String name,
-    @Email String email,
+    @NotBlank @Email String email,
     @NotBlank String senha,
     @NotBlank String perfil,
     @NotNull Status status) {

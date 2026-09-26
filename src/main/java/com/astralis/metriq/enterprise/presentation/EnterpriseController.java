@@ -1,6 +1,9 @@
 package com.astralis.metriq.enterprise.presentation;
 
 import java.util.UUID;
+import org.springframework.web.bind.annotation.PutMapping;
+import com.astralis.metriq.enterprise.application.dtos.UpdateEnterpriseRequest;
+import com.astralis.metriq.enterprise.application.useCases.UpdateEnterpriseUseCase;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,6 +41,8 @@ public class EnterpriseController {
 
   private final DeleteEnterpriseByIdUseCase deleteEnterpriseByIdUseCase;
 
+  private final UpdateEnterpriseUseCase updateEnterpriseUseCase;
+
   @Operation(summary = "create enterprise", description = "Create Enterprise and return its data")
   @PostMapping("/create")
   public ResponseEntity<EnterpriseResponse> createEnterprise(@Valid @RequestBody CreateEnterpriseRequest dto) {
@@ -55,6 +60,13 @@ public class EnterpriseController {
   public ResponseEntity<EnterpriseResponse> getEnterpriseById(@PathVariable("id") UUID id) {
     return ResponseEntity.of(findEnterpriseByIdUseCase.executeFindEnterpriseById(id)
         .map(EnterpriseResponse::from));
+  }
+
+  @Operation(summary = "update enterprise", description = "Update Enterprise and return its data")
+  @PutMapping("/update-by-id/{id}")
+  public ResponseEntity<EnterpriseResponse> updateEnterprise(@PathVariable("id") UUID id,
+      @Valid @RequestBody UpdateEnterpriseRequest request) {
+    return ResponseEntity.of(updateEnterpriseUseCase.execute(id, request).map(EnterpriseResponse::from));
   }
 
   @DeleteMapping("/delete/{id}")

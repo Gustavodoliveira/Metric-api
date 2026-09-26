@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.astralis.metriq.users.application.dtos.CreateUserRequest;
 import com.astralis.metriq.users.application.mapper.CreateUserMapper;
@@ -27,12 +29,14 @@ class CreateUserUseCaseTest {
   @Mock
   private UserRepository repository;
 
+  private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
   private CreateUserUseCase useCase;
   private CreateUserRequest request;
 
   @BeforeEach
   void setup() {
-    useCase = new CreateUserUseCase(new CreateUserMapper(), repository);
+    useCase = new CreateUserUseCase(new CreateUserMapper(), repository, passwordEncoder);
     request = new CreateUserRequest(UUID.randomUUID(), "Gustavo", "gustavo@astralis.com",
         "senha123", "ADMIN", Status.ACTIVE);
   }
@@ -56,7 +60,8 @@ class CreateUserUseCaseTest {
         () -> assertEquals(request.enterpriseId(), mappedUser.getEmpresa_id()),
         () -> assertEquals(request.name(), mappedUser.getName()),
         () -> assertEquals(request.email(), mappedUser.getEmail()),
-        () -> assertEquals(request.senha(), mappedUser.getSenha()),
+        () -> assertNotEquals(request.senha(), mappedUser.getSenha()),
+        () -> assertTrue(passwordEncoder.matches(request.senha(), mappedUser.getSenha())),
         () -> assertEquals(request.perfil(), mappedUser.getPerfil()),
         () -> assertEquals(request.status(), mappedUser.getStatus()),
         () -> assertNotNull(mappedUser.getCreatedAt()),

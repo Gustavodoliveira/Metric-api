@@ -9,6 +9,8 @@ public interface UserRepository {
 
   UserEntity createUser(UserEntity user);
 
+  UserEntity updateUser(UserEntity user);
+
   Optional<UserEntity> findByEmail(String email);
 
   Optional<UserEntity> findById(UUID id);
