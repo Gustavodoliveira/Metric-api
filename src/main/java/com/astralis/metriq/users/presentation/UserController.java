@@ -1,5 +1,6 @@
 package com.astralis.metriq.users.presentation;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,7 @@ import com.astralis.metriq.users.domain.model.UserEntity;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PutMapping;
-import com.astralis.metriq.users.application.dtos.UpdateUserRequest;
-import com.astralis.metriq.users.application.useCases.UpdateUserUseCase;
-import com.astralis.metriq.users.presentation.dto.UserResponse;
+import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -39,30 +37,22 @@ public class UserController {
 
   private final FindUserByIdUseCase findUserByIdUseCase;
 
-  private final UpdateUserUseCase updateUserUseCase;
-
   @PostMapping("/create")
-  public ResponseEntity<UserResponse> postUser(@Valid @RequestBody CreateUserRequest request) {
+  public ResponseEntity<UserEntity> postUser(@Valid @RequestBody CreateUserRequest request) {
     UserEntity userEntity = createUserUseCase.execute(request);
-    return ResponseEntity.ok(UserResponse.from(userEntity));
+    return ResponseEntity.ok(userEntity);
   }
 
   @GetMapping("/getBy-email/{email}")
-  public ResponseEntity<UserResponse> getUserByEmail(@PathVariable("email") String email) {
+  public ResponseEntity<UserEntity> getUserByEmail(@PathVariable("email") String email) {
     UserEntity user = findUserByEmailUseCase.execute(email);
-    return ResponseEntity.ok(UserResponse.from(user));
+    return ResponseEntity.ok(user);
   }
 
   @GetMapping("/getBy-id/{id}")
-  public ResponseEntity<UserResponse> getUserById(@PathVariable("id") UUID id) {
+  public ResponseEntity<UserEntity> getUserById(@PathVariable("id") UUID id) {
     UserEntity user = findUserByIdUseCase.execute(id);
-    return ResponseEntity.ok(UserResponse.from(user));
-  }
-
-  @PutMapping("/update-by-id/{id}/{idEnterprise}")
-  public ResponseEntity<UserResponse> updateUser(@PathVariable("id") UUID id,
-      @PathVariable("idEnterprise") UUID enterpriseId, @Valid @RequestBody UpdateUserRequest request) {
-    return ResponseEntity.ok(UserResponse.from(updateUserUseCase.execute(id, enterpriseId, request)));
+    return ResponseEntity.ok(user);
   }
 
   @DeleteMapping("/delete-by-id/{id}/{idEnterprise}")
