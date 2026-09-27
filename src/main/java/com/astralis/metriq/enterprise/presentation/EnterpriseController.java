@@ -52,13 +52,13 @@ public class EnterpriseController {
 
   @GetMapping("/by-Cnpj/{cnpj}")
   public ResponseEntity<EnterpriseResponse> getEnterpriseByCnpj(@PathVariable("cnpj") String cnpj) {
-    return ResponseEntity.of(findEnterpriseByCnpjUseCase.executeFindEnterpriseByCnpj(cnpj)
+    return ResponseEntity.of(findEnterpriseByCnpjUseCase.execute(cnpj)
         .map(EnterpriseResponse::from));
   }
 
   @GetMapping("/by-id/{id}")
   public ResponseEntity<EnterpriseResponse> getEnterpriseById(@PathVariable("id") UUID id) {
-    return ResponseEntity.of(findEnterpriseByIdUseCase.executeFindEnterpriseById(id)
+    return ResponseEntity.of(findEnterpriseByIdUseCase.execute(id)
         .map(EnterpriseResponse::from));
   }
 
@@ -71,7 +71,7 @@ public class EnterpriseController {
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<String> deleteEnterpriseById(@PathVariable("id") UUID id) {
-    deleteEnterpriseByIdUseCase.executeDeleteEnterpriseById(id);
+    deleteEnterpriseByIdUseCase.execute(id);
     return ResponseEntity.ok("Empresa Deletada com sucesso");
   }
 }

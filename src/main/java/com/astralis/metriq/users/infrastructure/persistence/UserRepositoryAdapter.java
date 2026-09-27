@@ -1,6 +1,7 @@
 package com.astralis.metriq.users.infrastructure.persistence;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
@@ -21,9 +22,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
   @Override
   public UserEntity createUser(UserEntity user) {
-    UserJpaEntity entity = mapper.toEntity(user);
-    repository.save(entity);
-    return mapper.toDomain(entity);
+    return mapper.toDomain(repository.save(mapper.toEntity(user)));
   }
 
   @Override
@@ -42,8 +41,8 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
-  public Optional<UserEntity> findByEnterpriseId(UUID enterpriseId) {
-    return repository.findByEnterprise_id(enterpriseId).map((s) -> mapper.toDomain(s));
+  public List<UserEntity> findByEnterpriseId(UUID enterpriseId) {
+    return repository.findByEnterprise_id(enterpriseId).stream().map(mapper::toDomain).toList();
   }
 
   @Override

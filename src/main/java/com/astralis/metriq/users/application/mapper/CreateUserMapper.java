@@ -1,6 +1,5 @@
 package com.astralis.metriq.users.application.mapper;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;

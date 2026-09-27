@@ -16,7 +16,7 @@ public class FindEnterpriseByIdUseCase {
 
   private final EnterpriseRepository repository;
 
-  public Optional<Enterprise> executeFindEnterpriseById(UUID id) {
+  public Optional<Enterprise> execute(UUID id) {
     return repository.findById(id);
   }
 

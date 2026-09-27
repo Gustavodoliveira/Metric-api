@@ -15,7 +15,7 @@ public class FindEnterpriseByCnpjUseCase {
 
   private final EnterpriseRepository repository;
 
-  public Optional<Enterprise> executeFindEnterpriseByCnpj(String cnpj) {
+  public Optional<Enterprise> execute(String cnpj) {
     return repository.findByCnpj(formatCnpj(cnpj));
 
   }

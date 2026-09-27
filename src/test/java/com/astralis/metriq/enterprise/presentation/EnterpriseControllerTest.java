@@ -32,8 +32,8 @@ class EnterpriseControllerTest {
   @Test
   void missingEnterpriseReturns404() throws Exception {
     UUID id = UUID.randomUUID();
-    when(findById.executeFindEnterpriseById(id)).thenReturn(Optional.empty());
-    when(findByCnpj.executeFindEnterpriseByCnpj("11222333000181")).thenReturn(Optional.empty());
+    when(findById.execute(id)).thenReturn(Optional.empty());
+    when(findByCnpj.execute("11222333000181")).thenReturn(Optional.empty());
     mvc.perform(get("/enterprise/by-id/{id}", id)).andExpect(status().isNotFound());
     mvc.perform(get("/enterprise/by-Cnpj/11222333000181")).andExpect(status().isNotFound());
   }
@@ -44,7 +44,7 @@ class EnterpriseControllerTest {
     Enterprise enterprise = new Enterprise();
     enterprise.setId(id);
     enterprise.setRazaoSocial("Empresa Teste");
-    when(findById.executeFindEnterpriseById(id)).thenReturn(Optional.of(enterprise));
+    when(findById.execute(id)).thenReturn(Optional.of(enterprise));
     mvc.perform(get("/enterprise/by-id/{id}", id)).andExpect(status().isOk())
         .andExpect(jsonPath("$.razao_social").value("Empresa Teste"))
         .andExpect(jsonPath("$.razaoSocial").doesNotExist());
@@ -70,7 +70,7 @@ class EnterpriseControllerTest {
 
   @Test
   void invalidCnpjReturns400() throws Exception {
-    when(findByCnpj.executeFindEnterpriseByCnpj("invalid"))
+    when(findByCnpj.execute("invalid"))
         .thenThrow(new IllegalArgumentException("CNPJ inválido"));
     mvc.perform(get("/enterprise/by-Cnpj/invalid")).andExpect(status().isBadRequest());
   }

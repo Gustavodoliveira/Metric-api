@@ -1,6 +1,7 @@
 package com.astralis.metriq.users.domain.repositories;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import com.astralis.metriq.users.domain.model.UserEntity;
@@ -15,7 +16,7 @@ public interface UserRepository {
 
   Optional<UserEntity> findById(UUID id);
 
-  Optional<UserEntity> findByEnterpriseId(UUID enterpriseId);
+  List<UserEntity> findByEnterpriseId(UUID enterpriseId);
 
   void deleteUser(UUID id, UUID enterpriseId);
 }

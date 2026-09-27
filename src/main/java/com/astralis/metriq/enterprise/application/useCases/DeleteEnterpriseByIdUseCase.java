@@ -14,7 +14,7 @@ public class DeleteEnterpriseByIdUseCase {
 
   private final EnterpriseRepository enterpriseRepository;
 
-  public void executeDeleteEnterpriseById(UUID id) {
+  public void execute(UUID id) {
     enterpriseRepository.deleteById(id);
   }
 }

@@ -139,7 +139,10 @@ public class UserRepositoryAdapterTest {
   void shouldFindUsersByEnterpriseId() {
     UserEntity user = createUser("gustavo@astralis.com");
 
-    UserEntity found = adapter.findByEnterpriseId(enterprise.getId()).orElseThrow();
+    createUser("second@example.com");
+    var users = adapter.findByEnterpriseId(enterprise.getId());
+    assertEquals(2, users.size());
+    UserEntity found = users.stream().filter(item -> item.getId().equals(user.getId())).findFirst().orElseThrow();
 
     assertEquals(user.getId(), found.getId());
     assertEquals(user.getEmail(), found.getEmail());

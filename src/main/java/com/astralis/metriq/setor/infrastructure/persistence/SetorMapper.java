@@ -29,7 +29,7 @@ public class SetorMapper {
     }
 
     return new SetorEntity(entity.getId(),
-        entity.getEnterprise_id() == null ? null : entity.getEnterprise_id().getId(),
+        entity.getEnterprise() == null ? null : entity.getEnterprise().getId(),
         entity.getNome(), entity.getDescricao(), entity.getAtivo(),
         entity.getCreatedAt(), entity.getUpdatedAt());
   }

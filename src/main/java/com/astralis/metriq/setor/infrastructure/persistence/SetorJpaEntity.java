@@ -1,11 +1,12 @@
 package com.astralis.metriq.setor.infrastructure.persistence;
 
+import jakarta.persistence.UniqueConstraint;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.astralis.metriq.enterprise.infrastructure.persistence.EnterpriseJpaEntity;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,7 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "setor")
+@Table(name = "setor", uniqueConstraints = @UniqueConstraint(
+    name = "uk_setor_enterprise_nome", columnNames = {"enterprise_id", "nome"}))
 @Getter
 @Setter
 @AllArgsConstructor
@@ -35,12 +36,12 @@ public class SetorJpaEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "enterprise_id", nullable = false)
-  private EnterpriseJpaEntity enterprise_id;
+  private EnterpriseJpaEntity enterprise;
 
-  @Column(name = "nome", nullable = false)
+  @Column(name = "nome", nullable = false, length = 100)
   private String nome;
 
-  @Column(name = "descricao", nullable = false, length = 255)
+  @Column(name = "descricao", length = 255)
   private String descricao;
 
   @Column(name = "ativo", nullable = false)

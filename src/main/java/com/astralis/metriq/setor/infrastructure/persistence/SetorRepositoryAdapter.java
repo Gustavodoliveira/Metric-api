@@ -1,10 +1,11 @@
 package com.astralis.metriq.setor.infrastructure.persistence;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-import com.astralis.metriq.setor.domain.exceptions.SetorNotFoundException;
 import com.astralis.metriq.setor.domain.model.SetorEntity;
 import com.astralis.metriq.setor.domain.repositories.SetorRepository;
 
@@ -23,21 +24,23 @@ public class SetorRepositoryAdapter implements SetorRepository {
   }
 
   @Override
-  public SetorEntity findByEnterpriseId(UUID id) {
-    return repository.findByEnterpriseId(id).map(mapper::toDomain)
-        .orElseThrow(() -> new SetorNotFoundException("Setor não encontrado para a empresa"));
+  public List<SetorEntity> findByEnterpriseId(UUID id) {
+    return repository.findByEnterpriseId(id).stream().map(mapper::toDomain).toList();
   }
 
   @Override
-  public SetorEntity findById(UUID id) {
-    return repository.findById(id).map(mapper::toDomain)
-        .orElseThrow(() -> new SetorNotFoundException(id));
+  public Optional<SetorEntity> findById(UUID id) {
+    return repository.findById(id).map(mapper::toDomain);
   }
 
   @Override
-  public SetorEntity findByName(String name, UUID enterpriseId) {
-    return repository.findByNomeAndEnterpriseId(name, enterpriseId).map(mapper::toDomain)
-        .orElseThrow(() -> new SetorNotFoundException("Setor não encontrado pelo nome"));
+  public Optional<SetorEntity> findByName(String name, UUID enterpriseId) {
+    return repository.findByNomeAndEnterpriseId(name, enterpriseId).map(mapper::toDomain);
+  }
+
+  @Override
+  public Optional<SetorEntity> findByIdAndEnterpriseId(UUID id, UUID enterpriseId) {
+    return repository.findByIdAndEnterprise_Id(id, enterpriseId).map(mapper::toDomain);
   }
 
   @Override
