@@ -1,4 +1,4 @@
-package com.astralis.metriq.users.presentation.dto;
+package com.astralis.metriq.users.application.dtos;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

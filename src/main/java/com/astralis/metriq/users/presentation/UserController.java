@@ -1,6 +1,5 @@
 package com.astralis.metriq.users.presentation;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -18,10 +17,10 @@ import com.astralis.metriq.users.application.useCases.DeleteUserByIdUseCase;
 import com.astralis.metriq.users.application.useCases.FindUserByEmailUseCase;
 import com.astralis.metriq.users.application.useCases.FindUserByIdUseCase;
 import com.astralis.metriq.users.domain.model.UserEntity;
+import com.astralis.metriq.users.application.dtos.UserResponse;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -38,21 +37,21 @@ public class UserController {
   private final FindUserByIdUseCase findUserByIdUseCase;
 
   @PostMapping("/create")
-  public ResponseEntity<UserEntity> postUser(@Valid @RequestBody CreateUserRequest request) {
+  public ResponseEntity<UserResponse> postUser(@Valid @RequestBody CreateUserRequest request) {
     UserEntity userEntity = createUserUseCase.execute(request);
-    return ResponseEntity.ok(userEntity);
+    return ResponseEntity.ok(UserResponse.from(userEntity));
   }
 
   @GetMapping("/getBy-email/{email}")
-  public ResponseEntity<UserEntity> getUserByEmail(@PathVariable("email") String email) {
+  public ResponseEntity<UserResponse> getUserByEmail(@PathVariable("email") String email) {
     UserEntity user = findUserByEmailUseCase.execute(email);
-    return ResponseEntity.ok(user);
+    return ResponseEntity.ok(UserResponse.from(user));
   }
 
   @GetMapping("/getBy-id/{id}")
-  public ResponseEntity<UserEntity> getUserById(@PathVariable("id") UUID id) {
+  public ResponseEntity<UserResponse> getUserById(@PathVariable("id") UUID id) {
     UserEntity user = findUserByIdUseCase.execute(id);
-    return ResponseEntity.ok(user);
+    return ResponseEntity.ok(UserResponse.from(user));
   }
 
   @DeleteMapping("/delete-by-id/{id}/{idEnterprise}")

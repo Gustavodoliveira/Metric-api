@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import jakarta.validation.Valid;
-import com.astralis.metriq.enterprise.presentation.dto.EnterpriseResponse;
+import com.astralis.metriq.enterprise.application.dtos.EnterpriseResponse;
 
 @RestController
 @RequestMapping("/enterprise")

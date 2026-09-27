@@ -1,6 +1,5 @@
-package com.astralis.metriq.enterprise.presentation.dto;
+package com.astralis.metriq.enterprise.application.dtos;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import com.astralis.metriq.enterprise.domain.enums.PlanType;
