@@ -15,7 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.astralis.metriq.enterprise.application.useCases.FindEnterpriseByIdUseCase;
+import com.astralis.metriq.security.EnterpriseAccess;
+import com.astralis.metriq.users.domain.repositories.UserRepository;
+import com.astralis.metriq.users.domain.model.UserEntity;
+import com.astralis.metriq.users.domain.enums.Status;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.junit.jupiter.params.provider.CsvSource;
+import java.util.Optional;
 import com.astralis.metriq.setor.application.dtos.CreateSetorRequestDto;
 import com.astralis.metriq.setor.application.useCases.*;
 import com.astralis.metriq.setor.domain.model.SetorEntity;
@@ -23,7 +29,7 @@ import com.astralis.metriq.setor.domain.model.SetorEntity;
 class SetorControllerTest {
   private final CreateSetorUseCase create = mock(CreateSetorUseCase.class);
   private final FindSetorByEnterpriseIdUseCase findByEnterprise = mock(FindSetorByEnterpriseIdUseCase.class);
-  private final FindEnterpriseByIdUseCase findEnterprise = mock(FindEnterpriseByIdUseCase.class);
+  private final UserRepository users = mock(UserRepository.class);
   private final FindSetorByNameAndEnterpriseIdUseCase findByName = mock(FindSetorByNameAndEnterpriseIdUseCase.class);
   private final DeleteSetorByIdUseCase delete = mock(DeleteSetorByIdUseCase.class);
   private final UUID id = UUID.fromString("11111111-1111-1111-1111-111111111111");
@@ -32,8 +38,16 @@ class SetorControllerTest {
 
   @BeforeEach
   void setUp() {
+    UserEntity user = new UserEntity();
+    user.setEmail("user@example.com");
+    user.setEmpresa_id(enterpriseId);
+    user.setStatus(Status.ACTIVE);
+    when(users.findByEmail("user@example.com")).thenReturn(Optional.of(user));
     mvc = MockMvcBuilders.standaloneSetup(
-        new SetorController(create, findByEnterprise, findEnterprise, findByName, delete)).build();
+        new SetorController(create, findByEnterprise, new EnterpriseAccess(users), findByName, delete))
+        .defaultRequest(get("/").principal(
+            UsernamePasswordAuthenticationToken.authenticated("user@example.com", null, List.of())))
+        .build();
   }
 
   @Test
@@ -44,7 +58,8 @@ class SetorControllerTest {
     mvc.perform(post("/setor/create").contentType(MediaType.APPLICATION_JSON).content("""
         {"enterpriseId":"%s","name":"Financeiro","descricao":"Contas","ativo":true}
         """.formatted(enterpriseId)))
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
+        .andExpect(header().string("Location", "http://localhost/setor/get/Financeiro/" + enterpriseId))
         .andExpect(jsonPath("$.id").value(id.toString()))
         .andExpect(jsonPath("$.enterpriseId").value(enterpriseId.toString()))
         .andExpect(jsonPath("$.name").value("Financeiro"))
@@ -54,7 +69,7 @@ class SetorControllerTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"", "{", "{\"enterpriseId\":\"invalid\"}"})
+  @ValueSource(strings = {"", "{", "{}", "{\"enterpriseId\":\"invalid\"}"})
   void invalidCreateBodyReturns400WithoutCallingUseCase(String body) throws Exception {
     mvc.perform(post("/setor/create").contentType(MediaType.APPLICATION_JSON).content(body))
         .andExpect(status().isBadRequest());
@@ -114,6 +129,45 @@ class SetorControllerTest {
         invalidField.equals("enterpriseId") ? "invalid" : enterpriseId.toString()))
         .andExpect(status().isBadRequest());
     verifyNoInteractions(delete);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"name", "descricao", "enterpriseId", "ativo"})
+  void invalidFieldsReturn400(String field) throws Exception {
+    String name = field.equals("name") ? " " : "Financeiro";
+    String description = field.equals("descricao") ? "x".repeat(256) : "Contas";
+    String company = field.equals("enterpriseId") ? "null" : "\"" + enterpriseId + "\"";
+    String active = field.equals("ativo") ? "null" : "true";
+    mvc.perform(post("/setor/create").contentType(MediaType.APPLICATION_JSON).content(
+        "{\"enterpriseId\":%s,\"name\":\"%s\",\"descricao\":\"%s\",\"ativo\":%s}"
+            .formatted(company, name, description, active)))
+        .andExpect(status().isBadRequest());
+    verifyNoInteractions(create);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"create,401", "list,401", "name,401", "delete,401",
+      "create,403", "list,403", "name,403", "delete,403"})
+  void unauthorizedRequestsNeverReachUseCases(String route, int expectedStatus) throws Exception {
+    var request = switch (route) {
+      case "create" -> post("/setor/create").contentType(MediaType.APPLICATION_JSON).content(
+          "{\"enterpriseId\":\"%s\",\"name\":\"Financeiro\",\"ativo\":true}".formatted(enterpriseId));
+      case "list" -> get("/setor/get/{enterpriseId}", enterpriseId);
+      case "name" -> get("/setor/get/{name}/{id}", "Financeiro", enterpriseId);
+      default -> delete("/setor/delete/{id}/{enterpriseId}", id, enterpriseId);
+    };
+    request.principal(UsernamePasswordAuthenticationToken.authenticated("unknown@example.com", null, List.of()));
+    when(users.findByEmail("unknown@example.com")).thenReturn(Optional.empty());
+    if (expectedStatus == 401) {
+      request.principal(UsernamePasswordAuthenticationToken.unauthenticated("user@example.com", null));
+    } else {
+      UserEntity otherUser = new UserEntity();
+      otherUser.setStatus(Status.ACTIVE);
+      otherUser.setEmpresa_id(UUID.randomUUID());
+      when(users.findByEmail("unknown@example.com")).thenReturn(Optional.of(otherUser));
+    }
+    mvc.perform(request).andExpect(status().is(expectedStatus));
+    verifyNoInteractions(create, findByName, findByEnterprise, delete);
   }
 
   private SetorEntity setor() {

@@ -12,6 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.astralis.metriq.users.domain.repositories.UserRepository;
+import com.astralis.metriq.users.domain.enums.Status;
 
 @Configuration
 @EnableWebSecurity
@@ -22,9 +28,21 @@ public class FilterSecurity {
     return http
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .httpBasic(Customizer.withDefaults())
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/setor/**").authenticated()
             .anyRequest().permitAll())
         .build();
+  }
+
+  @Bean
+  public UserDetailsService userDetailsService(UserRepository users) {
+    return email -> {
+      var user = users.findByEmail(email)
+          .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+      return User.withUsername(user.getEmail()).password(user.getSenha())
+          .authorities("USER").disabled(user.getStatus() != Status.ACTIVE).build();
+    };
   }
 
   @Bean
